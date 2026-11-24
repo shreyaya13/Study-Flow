@@ -1,0 +1,32 @@
+{% extends "base.html" %}{% block title %}Overview · StudyFlow{% endblock %}
+{% block content %}
+<div class="welcome-row"><div><div class="eyebrow">YOUR LEARNING SPACE</div><h1>Good to see you, {{ current_user.name.split()[0] }} <span class="wave">✦</span></h1><p class="muted">A little progress each day adds up to big results.</p></div><a class="btn primary" href="{{ url_for('card_form') }}">＋ New flashcard</a></div>
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-top"><span class="stat-icon purple">▤</span><span class="stat-caption">YOUR LIBRARY</span></div><div class="stat-number">{{ total }}</div><div class="stat-bottom">Total flashcards</div></div>
+  <div class="stat-card"><div class="stat-top"><span class="stat-icon orange">✧</span><span class="stat-caption">READY TO REVIEW</span></div><div class="stat-number">{{ due }}</div><div class="stat-bottom">Cards due today</div></div>
+  <div class="stat-card"><div class="stat-top"><span class="stat-icon green">◷</span><span class="stat-caption">TODAY'S FOCUS</span></div><div class="stat-number">{{ minutes }}<small> min</small></div><div class="stat-bottom">Time well spent today</div></div>
+  <div class="stat-card"><div class="stat-top"><span class="stat-icon blue">◫</span><span class="stat-caption">YOUR COLLECTION</span></div><div class="stat-number">{{ subjects|length }}</div><div class="stat-bottom">Active subjects</div></div>
+</div>
+<div class="dashboard-grid">
+  <section class="panel timer-panel"><div class="panel-heading"><div><div class="eyebrow">STAY IN THE ZONE</div><h3>Focus timer</h3></div><span class="soft-tag">POMODORO</span></div>
+    <div class="timer-tabs"><button class="timer-tab selected" data-mode="focus">Focus · 25 min</button><button class="timer-tab" data-mode="break">Break · 5 min</button></div>
+    <div class="timer-ring"><div class="timer-inner"><div class="timer-state" id="timerState">READY TO FOCUS</div><div class="timer-display" id="timerDisplay">25:00</div><div class="timer-sub">Stay present. You've got this.</div></div></div>
+    <div class="timer-actions"><button class="btn primary" id="timerStart">Start focus</button><button class="btn outline" id="timerReset">Reset</button></div>
+    <form id="sessionForm" method="post" action="{{ url_for('save_session') }}" class="timer-save hidden"><input type="hidden" name="minutes" id="sessionMinutes" value="25"><select name="subject_id"><option value="">No subject</option>{% for s in subjects %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}</select><button class="btn primary small" type="submit">Save session</button></form>
+  </section>
+  <section class="panel chart-panel"><div class="panel-heading"><div><div class="eyebrow">CONSISTENCY IS KEY</div><h3>Your study activity</h3></div><span class="soft-tag">LAST 7 DAYS</span></div>
+    <div class="chart-area"><div class="chart-y"><span>60m</span><span>40m</span><span>20m</span><span>0</span></div><div class="bars">{% for d in week %}<div class="bar-wrap"><div class="bar-track"><div class="bar" style="height:{{ [100,d.minutes/60*100]|min }}%" title="{{ d.minutes }} minutes"></div></div><span>{{ d.day }}</span></div>{% endfor %}</div></div>
+    <div class="chart-foot"><span><i class="legend-dot"></i> Focus minutes</span><b>{{ week|sum(attribute='minutes') }} min <small>this week</small></b></div>
+  </section>
+</div>
+<div class="lower-grid">
+  <section class="panel"><div class="panel-heading"><div><div class="eyebrow">ORGANIZE YOUR LEARNING</div><h3>Your subjects</h3></div><a class="text-link" href="{{ url_for('subjects') }}">View all →</a></div>
+    {% if subjects %}<div class="subject-list">{% for s in subjects[:4] %}<div class="subject-row"><span class="subject-dot" style="background:{{ s.color }}"></span><b>{{ s.name }}</b><span class="subject-count">{{ s.card_count }} cards</span></div>{% endfor %}</div>{% else %}<div class="empty-state compact"><div class="empty-icon">◫</div><b>No subjects yet</b><p>Add a subject to organize your flashcards.</p><a class="text-link" href="{{ url_for('subjects') }}">Add your first subject →</a></div>{% endif %}
+  </section>
+  <section class="panel"><div class="panel-heading"><div><div class="eyebrow">KEEP THE MOMENTUM</div><h3>Quick actions</h3></div></div>
+    <a class="action-row" href="{{ url_for('practice') }}"><span class="action-icon orange">✧</span><span><b>Review flashcards</b><small>{{ due }} cards waiting for you</small></span><span class="arrow">→</span></a>
+    <a class="action-row" href="{{ url_for('cards') }}"><span class="action-icon purple">▤</span><span><b>Manage flashcards</b><small>Build your knowledge library</small></span><span class="arrow">→</span></a>
+    <a class="action-row" href="{{ url_for('subjects') }}"><span class="action-icon green">◫</span><span><b>Manage subjects</b><small>Keep your learning organized</small></span><span class="arrow">→</span></a>
+  </section>
+</div>
+{% endblock %}

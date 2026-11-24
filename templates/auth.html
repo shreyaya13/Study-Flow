@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Create account' if mode=='register' else 'Sign in' }} · StudyFlow{% endblock %}
+{% block auth_content %}
+<div class="auth-page">
+  <div class="auth-visual"><a class="brand light" href="{{ url_for('index') }}"><span class="brand-mark">S</span><span>studyflow</span></a>
+    <div class="visual-copy"><div class="eyebrow light-eyebrow">MAKE EVERY STUDY SESSION COUNT</div><h1>Small steps.<br><em>Big progress.</em></h1><p>A calmer way to plan your learning, remember more, and stay consistent.</p>
+      <div class="visual-pills"><span>✦ Focus with intention</span><span>↗ Learn at your pace</span></div></div>
+    <div class="visual-footer">YOUR PERSONAL LEARNING SPACE</div>
+  </div>
+  <div class="auth-form-side"><div class="auth-form">
+    <div class="eyebrow">WELCOME TO STUDYFLOW</div>
+    <h2>{{ 'Create your account' if mode=='register' else 'Welcome back' }}</h2>
+    <p class="muted">{{ 'Start building a better study routine today.' if mode=='register' else 'Sign in to pick up where you left off.' }}</p>
+    <form method="post">
+      {% if mode=='register' %}<label>Full name</label><input name="name" placeholder="Your name" required maxlength="80">{% endif %}
+      <label>Email address</label><input type="email" name="email" placeholder="you@example.com" required>
+      <label>Password</label><input type="password" name="password" placeholder="{{ 'At least 8 characters' if mode=='register' else 'Enter your password' }}" required {% if mode=='register' %}minlength="8"{% endif %}>
+      <button class="btn primary full" type="submit">{{ 'Create account' if mode=='register' else 'Sign in' }} <span>→</span></button>
+    </form>
+    <div class="auth-switch">{{ "Already have an account?" if mode=='register' else "New to StudyFlow?" }} <a href="{{ url_for('login' if mode=='register' else 'register') }}">{{ 'Sign in' if mode=='register' else 'Create an account' }}</a></div>
+    <div class="auth-note">Your learning journey, organized in one place.</div>
+  </div></div>
+</div>
+{% endblock %}
